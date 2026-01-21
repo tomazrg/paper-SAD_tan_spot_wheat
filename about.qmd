@@ -147,3 +147,68 @@ plot_grid(error_estimated,estimated)
 ggsave("fig/erro_real_estimado.png", dpi =600, height = 4, width = 8)
 ```
 
+```{r}
+ccc <- epiR :: epi.ccc(sad2$real,sad2$new)
+ccc.result <- ccc $ rho.c 
+ccc.result 
+```
+
+```{r}
+sad_long <- sad2 %>%
+  group_by(position, name) %>%
+  mutate(
+    error_unaided = real - unaided,
+    error_old     = real - old,
+    error_new     = real - new
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = starts_with("error_"),
+    names_to = "SAD_type",
+    values_to = "error"
+  ) %>%
+  mutate(
+    SAD_type = case_when(
+      SAD_type == "error_unaided" ~ "unaided",
+      SAD_type == "error_old"     ~ "old",
+      SAD_type == "error_new"     ~ "new"
+    )
+  )
+
+
+sad_long2 <- sad_long %>%
+  pivot_longer(
+    cols = c(unaided, old, new),   # colunas que você quer empilhar
+    names_to = "method",           # nova coluna que identifica o tipo de estimativa
+    values_to = "estimated"        # nova coluna com os valores numéricos
+  ) %>%
+  select(name, position, real, method, estimated)
+```
+
+```{r}
+
+library(DescTools)
+
+
+stats_data = sad_long2 %>% 
+  group_by(method, name) %>% 
+  summarise(ccc = CCC(estimated, real)$rho.c$est,
+            r = cor(estimated, real),
+            cb = CCC(estimated, real)$C.b,
+            ccc_lower = CCC(estimated, real)$rho.c$lwr.ci,
+            ccc_upper = CCC(estimated, real)$rho.c$upr.ci,
+            s.shift = CCC(estimated, real)$s.shift,
+            l.shift = CCC(estimated, real)$l.shift)
+```
+
+```{r}
+stats_data %>% 
+  filter(!method == "old") %>% 
+  ggplot(aes(method,ccc))+
+  geom_boxplot()
+```
+
+```{r}
+ICC()
+```
+
