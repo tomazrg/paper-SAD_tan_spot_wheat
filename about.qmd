@@ -2,3 +2,148 @@
 title: "About"
 ---
 
+```{r}
+library(gsheet)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+sad = gsheet2tbl("https://docs.google.com/spreadsheets/d/1ARRPpBUqGuJ1ptdLc-kJj-TUK6tyuL8w/edit?gid=1674080571#gid=1674080571")
+
+sad$real = as.numeric(sad$real)
+```
+
+```{r}
+sad2 = sad %>% 
+  filter(!name %in% c("Beatriz Damasceno","Jose Neto","David Aimar","Marina Gabriela", "Iago de Carvalho", "Iris Carolina","Mary Paz", 
+                    'Marcelo Henrique',"Maria Tatiana", "Mariana Martins"))
+```
+
+
+```{r}
+sad2 %>% 
+  ggplot(aes(x = real, y = unaided)) +
+  geom_point() +
+  facet_wrap(~ rater, ncol = 5) +
+  scale_x_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 10),
+    oob = scales::squish,    # em vez de descartar >100, “corta” em 100
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 10),
+    oob = scales::squish,
+    expand = c(0, 0)
+  )+
+  geom_abline(slope = 1, intercept = 0, color = "red", linetype = "solid")
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+sad_long <- sad2 %>%
+  group_by(position, name) %>%
+  mutate(
+    error_unaided = real - unaided,
+    error_old     = real - old,
+    error_new     = real - new
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = starts_with("error_"),
+    names_to = "SAD_type",
+    values_to = "error"
+  ) %>%
+  mutate(
+    SAD_type = case_when(
+      SAD_type == "error_unaided" ~ "Sem auxílio",
+      SAD_type == "error_old"     ~ "Antigo",
+      SAD_type == "error_new"     ~ "Com auxílio"
+    )
+  )
+
+library(ggthemes)
+
+cores_metodo <- c(
+  "Com auxílio"    = "#7FBF7B",
+  "Sem auxílio"    = "#A6764D",
+  "Antigo" = "steelblue")
+
+error_estimated = sad_long%>% 
+  filter(!SAD_type == "Antigo") %>% 
+  ggplot(aes(real,error))+
+  geom_point(aes(colour = SAD_type),size = 2)+
+  geom_hline(yintercept = 0, color ="black", linetype = "solid")+
+  geom_smooth(se = F, method = "loess", color = "tan2")+
+  xlim(0,100)+
+  #scale_color_colorblind()+
+  scale_colour_manual(values = cores_metodo) +
+  theme_few()+
+  #scale_color_manual()
+  labs(x = "Severidade real (%)",
+       y = "Erro absoluto")+
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_text(size = 14, face = "bold"))+
+  facet_wrap(~SAD_type, ncol = 1)
+```
+
+
+```{r}
+library(cowplot)
+
+sad_long2 <- sad_long %>%
+  pivot_longer(
+    cols = c(unaided, old, new),   # colunas que você quer empilhar
+    names_to = "method",           # nova coluna que identifica o tipo de estimativa
+    values_to = "estimated"        # nova coluna com os valores numéricos
+  ) %>%
+  select(name, position, real, method, estimated) %>% 
+   mutate(
+    method = case_when(
+      method == "unaided" ~ "Sem auxílio",
+      method == "old"     ~ "Antigo",
+      method == "new"     ~ "Com auxílio"
+    ))
+
+
+cores_metodo <- c(
+  "Com auxílio"    = "#7FBF7B",
+  "Sem auxílio"    = "#A6764D",
+  "Antigo" = "steelblue")
+
+estimated = sad_long2 %>% 
+  filter(!method == "Antigo") %>% 
+  ggplot(aes(x = real, y = estimated)) +
+  geom_jitter(aes(colour = method),width = 0.4) +
+  scale_x_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 20),
+    oob = scales::squish,    # em vez de descartar >100, “corta” em 100
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 20),
+    oob = scales::squish,
+    expand = c(0, 0)
+  )+
+  scale_colour_manual(values = cores_metodo) +
+  geom_abline(slope = 1, intercept = 0, color = "tan2", linetype = "solid", size = 1.4)+
+  facet_wrap(~method, ncol = 1)+
+  theme_few()+
+  labs(x = "Severidade real (%)",
+       y = "Severidade estimada (%)")+
+  theme(strip.text = element_text(size = 14, face = "bold"),
+        legend.position = "none")
+
+
+plot_grid(error_estimated,estimated)
+
+ggsave("fig/erro_real_estimado.png", dpi =600, height = 4, width = 8)
+```
+
