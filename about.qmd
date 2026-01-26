@@ -152,7 +152,7 @@ stats_data = sad_long2 %>%
 stats_data
 ```
 
-# Reliability analyses
+# Intraclass Correlation Coefficient
 
 ## With SAD
 
