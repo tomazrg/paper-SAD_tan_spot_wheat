@@ -1,0 +1,39 @@
+"0","library(irr)"
+"0",""
+"0","icc(sad2_wide, ""oneway"")"
+"1"," Single Score Intraclass Correlation
+
+"
+"1","   Model: oneway 
+"
+"1","   Type : consistency 
+
+"
+"1","   Subjects = 40 
+"
+"1","     Raters = 29 
+"
+"1","     ICC(1) = 0.913"
+"1","
+
+ F-Test, H0: r0 ="
+"1"," "
+"1","0"
+"1"," "
+"1","; H1: r0 >"
+"1"," "
+"1","0"
+"1"," "
+"1","
+"
+"1"," F(39,1120) = 307 , p = 0 
+
+"
+"1"," "
+"1",""
+"1","95"
+"1",""
+"1","%-Confidence Interval for ICC Population Values:
+"
+"1","  0.875 < ICC < 0.946
+"

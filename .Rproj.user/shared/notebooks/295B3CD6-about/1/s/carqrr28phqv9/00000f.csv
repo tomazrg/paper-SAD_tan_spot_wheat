@@ -1,0 +1,8 @@
+"0",""
+"0","library(patchwork)"
+"0",""
+"0","#layout = (error_estimated_ca/estimated_ca)|(error_estimated_sa/estimated_sa)"
+"0","layout = (estimated_sa)/(estimated_ca)"
+"0",""
+"0","  layout &"
+"0","  theme(plot.tag = element_text(face = ""bold"", size = 12))"

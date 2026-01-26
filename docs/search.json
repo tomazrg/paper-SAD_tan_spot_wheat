@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)",
+    "section": "",
+    "text": "Our study aimed to assess the performance of visual disease estimation using a SAD for tan spot in wheat.\nA protocol version of this work has been available at here."
+  },
+  {
+    "objectID": "index.html#review",
+    "href": "index.html#review",
+    "title": "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)",
+    "section": "Review",
+    "text": "Review\n\nWheat (Triticum aestivum) is an important cereal for animal and human development worldwide. However, the productivity of this crop can be affected by foliar diseases, especially tan spot caused by the necrotrophic fungus Pyrenophora tritici-repentis, responsible for reducing photosynthetically active areas and, consequently, the foliar biomass of wheat. The symptomatology of the disease is characterized by small elliptical lesions on the leaves, which later evolve into necroses with a brown coloration and a yellow halo."
+  },
+  {
+    "objectID": "index.html#why-is-this-study-important",
+    "href": "index.html#why-is-this-study-important",
+    "title": "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)",
+    "section": "Why is this study important?",
+    "text": "Why is this study important?\n\nRecent studies demonstrate that the disease can reduce the expected wheat yield by approximately 50%. Consequently, management strategies must be developed and evaluated in the field, with the aim of preventing or mitigating the progression of the disease. For foliar diseases, quantitative assessment is usually based on estimating the severity of the disease, the percentage area of the leaf exhibiting symptoms. However, visual estimates without minimal support can lead to errors and, consequently, to biased conclusions about the disease, influenced by factors intrinsic to the rater. For more precise quantification of the disease, several strategies have been proposed, among which diagrammatic scales stand out. These consist of illustrations of plants, leaves, fruits, or other symptomatic parts of the disease and are widely used to support visual estimates.\n\n Source: Marcelo H. O. Gonçalves"
+  },
+  {
+    "objectID": "index.html#who-am-i",
+    "href": "index.html#who-am-i",
+    "title": "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)",
+    "section": "Who am I?",
+    "text": "Who am I?\n\n\n\nI’m Ricardo G. Tomaz, a Brazilian PhD Student in Plant Pathology (UFV) and I am doing my PhD Sandwich Program at LSU (EUA). I have strong expertise in crop disease epidemiology, predictive modeling, and yield-loss simulation in crops such as soybean, wheat, and maize. In addition, I have worked with remote sensing to identify and quantify important disease in rice."
+  },
+  {
+    "objectID": "index.html#let-me-know-something",
+    "href": "index.html#let-me-know-something",
+    "title": "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)",
+    "section": "Let me know something",
+    "text": "Let me know something\n📧 rtomaz@agcenter.lsu.br"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Packages",
+    "section": "",
+    "text": "library(gsheet)\nlibrary(dplyr)\nlibrary(tidyverse)"
+  },
+  {
+    "objectID": "about.html#with-sad",
+    "href": "about.html#with-sad",
+    "title": "Packages",
+    "section": "With SAD",
+    "text": "With SAD\n\nccc &lt;- epiR :: epi.ccc(sad2$real,sad2$new)\nccc.result &lt;- ccc $ rho.c \nccc.result \n\n\n  \n\n\n\n\nCb &lt;- ccc$C.b\nCb\n\n[1] 0.985616\n\n\n\nr &lt;- ccc$rho.c[,1]/ccc$C.b\nr\n\n[1] 0.9317261"
+  },
+  {
+    "objectID": "about.html#without-sad",
+    "href": "about.html#without-sad",
+    "title": "Packages",
+    "section": "Without SAD",
+    "text": "Without SAD\n\nccc &lt;- epiR :: epi.ccc(sad2$real,sad2$unaided)\nccc.result &lt;- ccc $ rho.c \nccc.result \n\n\n  \n\n\n\n\nCb &lt;- ccc$C.b\nCb\n\n[1] 0.9866801\n\n\n\nr &lt;- ccc$rho.c[,1]/ccc$C.b\nr\n\n[1] 0.8486771"
+  },
+  {
+    "objectID": "about.html#by-raters",
+    "href": "about.html#by-raters",
+    "title": "Packages",
+    "section": "By raters",
+    "text": "By raters\n\nsad_long &lt;- sad2 %&gt;%\n  group_by(position, rater) %&gt;%\n  mutate(\n    error_unaided = real - unaided,\n    error_new     = real - new\n  ) %&gt;%\n  ungroup() %&gt;%\n  pivot_longer(\n    cols = starts_with(\"error_\"),\n    names_to = \"SAD_type\",\n    values_to = \"error\"\n  ) %&gt;%\n  mutate(\n    SAD_type = case_when(\n      SAD_type == \"error_unaided\" ~ \"unaided\",\n      SAD_type == \"error_new\"     ~ \"new\"\n    )\n  )\n\n\nsad_long2 &lt;- sad_long %&gt;%\n  pivot_longer(\n    cols = c(unaided, new),   \n    names_to = \"method\",       \n    values_to = \"estimated\"        \n  ) %&gt;%\n  select(rater, position, real, method, estimated)\n\n\nlibrary(DescTools)\n\n\nstats_data = sad_long2 %&gt;% \n  group_by(method, rater) %&gt;% \n  summarise(ccc = CCC(estimated, real)$rho.c$est,\n            r = cor(estimated, real),\n            cb = CCC(estimated, real)$C.b,\n            ccc_lower = CCC(estimated, real)$rho.c$lwr.ci,\n            ccc_upper = CCC(estimated, real)$rho.c$upr.ci,\n            s.shift = CCC(estimated, real)$s.shift,\n            l.shift = CCC(estimated, real)$l.shift)\nstats_data"
+  },
+  {
+    "objectID": "about.html#with-sad-1",
+    "href": "about.html#with-sad-1",
+    "title": "Packages",
+    "section": "With SAD",
+    "text": "With SAD\n\nsad3 = sad2 %&gt;%\n  dplyr::select(real,rater,new) %&gt;% \n  filter(!is.na(new))\n\n\nsad2_wide &lt;- sad3 %&gt;%\n  pivot_wider(\n    id_cols = c(real),\n    names_from = rater,\n    values_from = new\n  )\n\n\nlibrary(epiR)\n\nepi.occc(sad2_wide, na.rm = FALSE, pairs = TRUE)\n\n\nOverall CCC           0.9120\nOverall precision     0.9442\nOverall accuracy      0.9659\n\n\n\nlibrary(psych)\n\nic = ICC(sad2_wide)\nknitr::kable(ic$results[1:2])\n\n\n\n\n\ntype\nICC\n\n\n\n\nSingle_raters_absolute\nICC1\n0.9133245\n\n\nSingle_random_raters\nICC2\n0.9134044\n\n\nSingle_fixed_raters\nICC3\n0.9384759\n\n\nAverage_raters_absolute\nICC1k\n0.9967382\n\n\nAverage_random_raters\nICC2k\n0.9967415\n\n\nAverage_fixed_raters\nICC3k\n0.9977445\n\n\n\n\n\n\nlibrary(irr)\n\nicc(sad2_wide, \"oneway\")\n\n Single Score Intraclass Correlation\n\n   Model: oneway \n   Type : consistency \n\n   Subjects = 40 \n     Raters = 29 \n     ICC(1) = 0.913\n\n F-Test, H0: r0 = 0 ; H1: r0 &gt; 0 \n F(39,1120) = 307 , p = 0 \n\n 95%-Confidence Interval for ICC Population Values:\n  0.875 &lt; ICC &lt; 0.946"
+  },
+  {
+    "objectID": "about.html#without-sad-1",
+    "href": "about.html#without-sad-1",
+    "title": "Packages",
+    "section": "Without SAD",
+    "text": "Without SAD\n\nsad3 = sad2 %&gt;%\n  dplyr::select(real,rater,unaided) %&gt;% \n  filter(!is.na(unaided))\n\n\nsad2_wide &lt;- sad3 %&gt;%\n  pivot_wider(\n    id_cols = c(real),\n    names_from = rater,\n    values_from = unaided\n  )\n\n\nlibrary(epiR)\n\nepi.occc(sad2_wide, na.rm = FALSE, pairs = TRUE)\n\n\nOverall CCC           0.7707\nOverall precision     0.8952\nOverall accuracy      0.8609\n\n\n\nlibrary(psych)\n\nic = ICC(sad2_wide)\nknitr::kable(ic$results[1:2])\n\n\n\n\n\ntype\nICC\n\n\n\n\nSingle_raters_absolute\nICC1\n0.7718848\n\n\nSingle_random_raters\nICC2\n0.7727976\n\n\nSingle_fixed_raters\nICC3\n0.8742473\n\n\nAverage_raters_absolute\nICC1k\n0.9899121\n\n\nAverage_random_raters\nICC2k\n0.9899638\n\n\nAverage_fixed_raters\nICC3k\n0.9950644\n\n\n\n\n\n\nlibrary(irr)\n\nicc(sad2_wide, \"oneway\")\n\n Single Score Intraclass Correlation\n\n   Model: oneway \n   Type : consistency \n\n   Subjects = 40 \n     Raters = 29 \n     ICC(1) = 0.772\n\n F-Test, H0: r0 = 0 ; H1: r0 &gt; 0 \n F(39,1120) = 99.1 , p = 0 \n\n 95%-Confidence Interval for ICC Population Values:\n  0.691 &lt; ICC &lt; 0.849"
+  }
+]

@@ -1,11 +1,59 @@
 ---
-title: "SAD_tan_spot"
+title: "Visual asessement of tan spot severity in wheat using a standard area diagram (SAD)"
+format:
+  html:
+    toc: true
+    toc-location: right
+    css: styles.css
 ---
 
-This is a Quarto website.
+Our study aimed to assess the performance of visual disease estimation using a SAD for tan spot in wheat.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+A protocol version of this work has been available at [here](.).
 
-```{r}
-1 + 1
+------------------------------------------------------------------------
+
+## Review
+
+<div style="text-align: justify;">
+
+Wheat (*Triticum aestivum*) is an important cereal for animal and human development worldwide. However, the productivity of this crop can be affected by foliar diseases, especially tan spot caused by the necrotrophic fungus *Pyrenophora tritici-repentis*, responsible for reducing photosynthetically active areas and, consequently, the foliar biomass of wheat. The symptomatology of the disease is characterized by small elliptical lesions on the leaves, which later evolve into necroses with a brown coloration and a yellow halo.
+
+</div>
+
+------------------------------------------------------------------------
+
+## Why is this study important?
+
+<div style="text-align: justify;">
+
+Recent studies demonstrate that the disease can reduce the expected wheat yield by approximately 50%. Consequently, management strategies must be developed and evaluated in the field, with the aim of preventing or mitigating the progression of the disease. For foliar diseases, quantitative assessment is usually based on estimating the severity of the disease, the percentage area of the leaf exhibiting symptoms. However, visual estimates without minimal support can lead to errors and, consequently, to biased conclusions about the disease, influenced by factors intrinsic to the rater. For more precise quantification of the disease, several strategies have been proposed, among which diagrammatic scales stand out. These consist of illustrations of plants, leaves, fruits, or other symptomatic parts of the disease and are widely used to support visual estimates.
+
+</div>
+
+![](fig/symptoms.png){fig-align="center" width="100%"}
+Source: Marcelo H. O. Gonçalves
+
+------------------------------------------------------------------------
+
+## Who am I?
+
+::: {style="display:flex; align-items:center; gap:20px; margin-top:20px;"}
+```{=html}
+<img src="fig/me.jpg"
+       alt="Profile photo"
+       style="width:150px; height:150px; border-radius:50%; object-fit:cover;">
 ```
+
+<p style="max-width:600px;">
+
+I'm Ricardo G. Tomaz, a Brazilian PhD Student in Plant Pathology (UFV) and I am doing my PhD Sandwich Program at LSU (EUA). I have strong expertise in crop disease epidemiology, predictive modeling, and yield-loss simulation in crops such as soybean, wheat, and maize. In addition, I have worked with remote sensing to identify and quantify important disease in rice.
+
+</p>
+:::
+
+------------------------------------------------------------------------
+
+## Let me know something
+
+📧 **rtomaz\@agcenter.lsu.br**

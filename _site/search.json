@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Packages",
+    "section": "",
+    "text": "library(gsheet)\nlibrary(dplyr)\nlibrary(tidyverse)"
+  },
+  {
+    "objectID": "about.html#with-sad",
+    "href": "about.html#with-sad",
+    "title": "Packages",
+    "section": "With SAD",
+    "text": "With SAD\n\nccc &lt;- epiR :: epi.ccc(sad2$real,sad2$new)\nccc.result &lt;- ccc $ rho.c \nccc.result \n\n        est     lower     upper\n1 0.9183241 0.9089817 0.9267444\n\n\n\nCb &lt;- ccc$C.b\nCb\n\n[1] 0.985616\n\n\n\nr &lt;- ccc$rho.c[,1]/ccc$C.b\nr\n\n[1] 0.9317261"
+  },
+  {
+    "objectID": "about.html#without-sad",
+    "href": "about.html#without-sad",
+    "title": "Packages",
+    "section": "Without SAD",
+    "text": "Without SAD\n\nccc &lt;- epiR :: epi.ccc(sad2$real,sad2$unaided)\nccc.result &lt;- ccc $ rho.c \nccc.result \n\n        est    lower     upper\n1 0.8373728 0.819344 0.8537471\n\n\n\nCb &lt;- ccc$C.b\nCb\n\n[1] 0.9866801\n\n\n\nr &lt;- ccc$rho.c[,1]/ccc$C.b\nr\n\n[1] 0.8486771"
+  },
+  {
+    "objectID": "about.html#by-raters",
+    "href": "about.html#by-raters",
+    "title": "Packages",
+    "section": "By raters",
+    "text": "By raters\n\nsad_long &lt;- sad2 %&gt;%\n  group_by(position, rater) %&gt;%\n  mutate(\n    error_unaided = real - unaided,\n    error_old     = real - old,\n    error_new     = real - new\n  ) %&gt;%\n  ungroup() %&gt;%\n  pivot_longer(\n    cols = starts_with(\"error_\"),\n    names_to = \"SAD_type\",\n    values_to = \"error\"\n  ) %&gt;%\n  mutate(\n    SAD_type = case_when(\n      SAD_type == \"error_unaided\" ~ \"unaided\",\n      SAD_type == \"error_old\"     ~ \"old\",\n      SAD_type == \"error_new\"     ~ \"new\"\n    )\n  )\n\n\nsad_long2 &lt;- sad_long %&gt;%\n  pivot_longer(\n    cols = c(unaided, old, new),   \n    names_to = \"method\",       \n    values_to = \"estimated\"        \n  ) %&gt;%\n  select(rater, position, real, method, estimated)\n\n\nlibrary(DescTools)\n\n\nstats_data = sad_long2 %&gt;% \n  group_by(method, rater) %&gt;% \n  summarise(ccc = CCC(estimated, real)$rho.c$est,\n            r = cor(estimated, real),\n            cb = CCC(estimated, real)$C.b,\n            ccc_lower = CCC(estimated, real)$rho.c$lwr.ci,\n            ccc_upper = CCC(estimated, real)$rho.c$upr.ci,\n            s.shift = CCC(estimated, real)$s.shift,\n            l.shift = CCC(estimated, real)$l.shift)\nstats_data\n\n# A tibble: 84 × 9\n# Groups:   method [3]\n   method rater   ccc     r    cb ccc_lower ccc_upper s.shift l.shift\n   &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;\n 1 new        1 0.926 0.942 0.983     0.897     0.947    1.07  0.175 \n 2 new        2 0.913 0.944 0.968     0.880     0.937    1.07  0.250 \n 3 new        4 0.943 0.953 0.990     0.921     0.959    1.11  0.0976\n 4 new        5 0.931 0.978 0.952     0.907     0.948    1.12 -0.297 \n 5 new        6 0.859 0.920 0.934     0.811     0.896    1.07  0.370 \n 6 new        7 0.923 0.939 0.983     0.893     0.945    1.07  0.175 \n 7 new        8 0.910 0.944 0.964     0.878     0.933    1.21  0.195 \n 8 new        9 0.897 0.922 0.973     0.859     0.925    1.18  0.166 \n 9 new       11 0.954 0.960 0.994     0.935     0.967    1.06  0.0975\n10 new       12 0.910 0.936 0.972     0.878     0.935    1.17  0.177 \n# ℹ 74 more rows"
+  },
+  {
+    "objectID": "about.html#with-sad-1",
+    "href": "about.html#with-sad-1",
+    "title": "Packages",
+    "section": "With SAD",
+    "text": "With SAD\n\nsad3 = sad2 %&gt;%\n  dplyr::select(real,rater,new) %&gt;% \n  filter(!is.na(new))\n\n\nsad2_wide &lt;- sad3 %&gt;%\n  pivot_wider(\n    id_cols = c(real),\n    names_from = rater,\n    values_from = new\n  )\n\n\nlibrary(epiR)\n\nepi.occc(sad2_wide, na.rm = FALSE, pairs = TRUE)\n\n\nOverall CCC           0.9120\nOverall precision     0.9442\nOverall accuracy      0.9659\n\n\n\nlibrary(psych)\n\nic = ICC(sad2_wide)\nknitr::kable(ic$results[1:2])\n\n\n\n\n\ntype\nICC\n\n\n\n\nSingle_raters_absolute\nICC1\n0.9133245\n\n\nSingle_random_raters\nICC2\n0.9134044\n\n\nSingle_fixed_raters\nICC3\n0.9384759\n\n\nAverage_raters_absolute\nICC1k\n0.9967382\n\n\nAverage_random_raters\nICC2k\n0.9967415\n\n\nAverage_fixed_raters\nICC3k\n0.9977445\n\n\n\n\n\n\nlibrary(irr)\n\nicc(sad2_wide, \"oneway\")\n\n Single Score Intraclass Correlation\n\n   Model: oneway \n   Type : consistency \n\n   Subjects = 40 \n     Raters = 29 \n     ICC(1) = 0.913\n\n F-Test, H0: r0 = 0 ; H1: r0 &gt; 0 \n F(39,1120) = 307 , p = 0 \n\n 95%-Confidence Interval for ICC Population Values:\n  0.875 &lt; ICC &lt; 0.946"
+  },
+  {
+    "objectID": "about.html#without-sad-1",
+    "href": "about.html#without-sad-1",
+    "title": "Packages",
+    "section": "Without SAD",
+    "text": "Without SAD\n\nsad3 = sad2 %&gt;%\n  dplyr::select(real,rater,unaided) %&gt;% \n  filter(!is.na(unaided))\n\n\nsad2_wide &lt;- sad3 %&gt;%\n  pivot_wider(\n    id_cols = c(real),\n    names_from = rater,\n    values_from = unaided\n  )\n\n\nlibrary(epiR)\n\nepi.occc(sad2_wide, na.rm = FALSE, pairs = TRUE)\n\n\nOverall CCC           0.7707\nOverall precision     0.8952\nOverall accuracy      0.8609\n\n\n\nlibrary(psych)\n\nic = ICC(sad2_wide)\nknitr::kable(ic$results[1:2])\n\n\n\n\n\ntype\nICC\n\n\n\n\nSingle_raters_absolute\nICC1\n0.7718848\n\n\nSingle_random_raters\nICC2\n0.7727976\n\n\nSingle_fixed_raters\nICC3\n0.8742473\n\n\nAverage_raters_absolute\nICC1k\n0.9899121\n\n\nAverage_random_raters\nICC2k\n0.9899638\n\n\nAverage_fixed_raters\nICC3k\n0.9950644\n\n\n\n\n\n\nlibrary(irr)\n\nicc(sad2_wide, \"oneway\")\n\n Single Score Intraclass Correlation\n\n   Model: oneway \n   Type : consistency \n\n   Subjects = 40 \n     Raters = 29 \n     ICC(1) = 0.772\n\n F-Test, H0: r0 = 0 ; H1: r0 &gt; 0 \n F(39,1120) = 99.1 , p = 0 \n\n 95%-Confidence Interval for ICC Population Values:\n  0.691 &lt; ICC &lt; 0.849"
+  }
+]

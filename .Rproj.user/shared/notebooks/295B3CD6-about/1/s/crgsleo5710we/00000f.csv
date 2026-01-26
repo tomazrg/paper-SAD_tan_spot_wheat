@@ -1,0 +1,4 @@
+"0","library(psych)"
+"0",""
+"0","ic = ICC(sad2_wide)"
+"0","knitr::kable(ic$results[1:2])"
