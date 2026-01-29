@@ -11,9 +11,36 @@ library(dplyr)
 library(tidyverse)
 ```
 
+# Pliman
+
+Utilizamos este script para quantificar a severidade da mancha-amarela na folha. Os valores obtidos foram hospedados na nuvem e importados na seção seguinte.
+```{r, echo=TRUE, eval=FALSE}
+
+s2 <- image_import("fig/s.jpeg")
+h <- readRDS("fig/my_paletteh.rds")
+b <- readRDS("fig/my_palette_b.rds")
+
+pliman <- measure_disease(
+  pattern = "img_",
+  dir_original = "image/originals" ,
+  dir_processed = "image/processed",
+  save_image = TRUE,
+  img_healthy = h,
+  img_symptoms = s2,
+  img_background = b,
+  verbose = FALSE,
+  plot = FALSE
+)
+
+severity = data.frame(pliman$severity)
+#writexl::write_xlsx(severity,"image/data/real_severity.xlsx")
+```
+
 # Data importation
 ```{r}
-sad = gsheet2tbl("https://docs.google.com/spreadsheets/d/1hLxH3CzhtBC1InN_rmTmll96m5z4U1SsWytDi2FDuIc/edit?usp=sharing")
+#sad = gsheet2tbl("https://docs.google.com/spreadsheets/d/1hLxH3CzhtBC1InN_rmTmll96m5z4U1SsWytDi2FDuIc/edit?usp=sharing")
+
+sad = readxl::read_xlsx("data/sad.xlsx")
 
 sad$real = as.numeric(sad$real)
 ```
